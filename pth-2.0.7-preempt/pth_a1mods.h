@@ -67,4 +67,8 @@ extern void a1_mod_log_print_line_start(pth_time_t t, pth_time_t running);
 
 extern void a1_mod_log_print_line_end(pth_t t, char py);
 
+extern void a1_mod_update_deadlines();
+
+extern void a1_mod_update_run_count(pth_t t);
+
 #endif /* _PTH_A1_MODS_H_ */

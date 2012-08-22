@@ -248,3 +248,52 @@ void a1_mod_log_print_line_end(pth_t t, char py) {
             break;
     }
 }
+
+
+/* 
+ * ===  FUNCTION  =============================================================
+ *         Name:  a1_mod_update_deadlines
+ *
+ *  Description:  Loops through the list of user threads and decrements all
+ *                deadlines. Any that are zero AFTER decrementing will be reset
+ *                to their origin value
+ * 
+ *      Version:  0.0.1
+ *       Params:  N/A
+ *      Returns:  void
+ *        Usage:  a1_mod_update_deadlines()
+ *      Outputs:  N/A
+ * ============================================================================
+ */
+void a1_mod_update_deadlines() {
+    int i;
+    pth_t t;
+
+    for ( i = 0; i < user_threads_count; i++ ) {
+        t = user_threads[i];
+        t->deadline_t_counter--;
+        if (t->deadline_t_counter == 0) {
+            /* Reset deadline period */
+            t->deadline_t_counter = t->deadline_t;
+            t->deadline_run_count = 0;
+        }
+    }
+}
+
+
+/* 
+ * ===  FUNCTION  =============================================================
+ *         Name:  a1_mod_update_run_count
+ *
+ *  Description:  Updates the deadline_run_count for the given thread
+ * 
+ *      Version:  0.0.1
+ *       Params:  pth_t t - Thread to update
+ *      Returns:  void
+ *        Usage:  a1_mod_update_run_count( pth_t t )
+ *      Outputs:  N/A
+ * ============================================================================
+ */
+void a1_mod_update_run_count(pth_t t) {
+    t->deadline_run_count++;
+}

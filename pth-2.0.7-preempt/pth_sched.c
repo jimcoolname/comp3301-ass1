@@ -179,12 +179,18 @@ intern void pth_sched_preempt(int signum)
     pth_debug3("pth_sched_preempt: thread \"%s\" ran %.6f",
                pth_current->name, pth_time_t2d(&running));
 
+    /* Run count update must come first. Deadline update will reset run count if deadline resets */
+    a1_mod_update_run_count(pth_current);
+    a1_mod_update_deadlines();
+
     if (signum == SIGVTALRM) {
         pth_debug2("pth_sched_preempt: thread \"%s\" was preempted", pth_current->name);
-        a1_mod_log_print_line_end(pth_current, 'P');
+        if (a1_mod_is_user_thread(pth_current))
+            a1_mod_log_print_line_end(pth_current, 'P');
     } else {
         pth_debug2("pth_sched_preempt: thread \"%s\" yielded control to scheduler", pth_current->name);
-        a1_mod_log_print_line_end(pth_current, 'Y');
+        if (a1_mod_is_user_thread(pth_current))
+            a1_mod_log_print_line_end(pth_current, 'Y');
     }
 
     /* call housekeeping code while the scheduler has control */

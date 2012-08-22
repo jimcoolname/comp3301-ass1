@@ -290,7 +290,8 @@ pth_t pth_spawn(pth_attr_t attr, void *(*func)(void *), void *arg)
         t->deadline_c = 1;
         t->deadline_t = 10;
     }
-    /* Make sure this is initialised as zero */
+    /* These are the same regardless of where the other vals come from */
+    t->deadline_t_counter = t->deadline_t;
     t->deadline_run_count = 0;
 
     /* initialize the time points and ranges */

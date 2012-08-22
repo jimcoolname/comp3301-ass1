@@ -82,7 +82,8 @@ struct pth_st {
 
     /* deadline attrs */
     int deadline_c;                      /* execution time to run thread for            */
-    int deadline_t;                      /* deadline period                             */
+    int deadline_t;                      /* deadline period original                    */
+    int deadline_t_counter;              /* deadline period countdown                   */
     int deadline_run_count;              /* number of runs in current period            */
 
 #ifdef PTH_EX
