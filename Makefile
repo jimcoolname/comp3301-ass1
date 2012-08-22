@@ -12,3 +12,6 @@ clean:
 
 test: test.o
 	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
+
+pth:
+	./build-pth.sh --debug
