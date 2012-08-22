@@ -190,6 +190,8 @@ void a1_mod_log_print_line_start(pth_time_t t, pth_time_t running) {
     int start_ms = pth_time_t2msi(&a1_mod_start_time);
     int running_ms = pth_time_t2msi(&running);
     int slice_time = t_ms - start_ms - running_ms;
+    if (slice_time < 0)
+        slice_time = 0;
 
     /* Convert slice time into a string */
     int slice_s_size = (int) (slice_time / 10);

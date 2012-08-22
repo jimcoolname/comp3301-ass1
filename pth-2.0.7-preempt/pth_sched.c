@@ -428,7 +428,7 @@ intern void *pth_scheduler(void *dummy)
         if (pth_time_equal(a1_mod_start_time, *PTH_TIME_ZERO))
             pth_time_set(&a1_mod_start_time, PTH_TIME_NOW);
         fprintf(stderr, "Lastran: %d\n", pth_time_t2msi(&pth_current->lastran));
-        a1_mod_log_print_line_start(pth_current->lastran, running);
+        a1_mod_log_print_line_start(pth_current->lastran, pth_sched->running);
     }
 
 
