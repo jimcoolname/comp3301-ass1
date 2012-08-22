@@ -22,14 +22,22 @@
 static void *thread_func(void *arg);
 
 int main(int argc, char *argv[]) {
-  if (pth_init()) {
-      pth_spawn(PTH_ATTR_DEFAULT, thread_func, NULL);
-      pth_spawn(PTH_ATTR_DEFAULT, thread_func, NULL);
-      pth_sleep(1);
-      pth_kill();
-      return 0;
-  }
-  return 1;
+    if (pth_init()) {
+
+        pth_attr_t attr = pth_attr_new();
+        pth_attr_set(attr, PTH_ATTR_NAME, "child1");
+        pth_spawn(attr, thread_func, NULL);
+
+        pth_attr_set(attr, PTH_ATTR_NAME, "child2");
+        pth_spawn(attr, thread_func, NULL);
+
+        pth_sleep(1);
+
+        pth_kill();
+
+        return 0;
+    }
+    return 1;
 }
 
 static void *thread_func(void *arg) {
