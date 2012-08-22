@@ -27,7 +27,7 @@
 DIFS=' 
 '
 
-prefix="/home/students/s4231814/comp3301/ass1/pth-2.0.7-preempt"
+prefix="/home/roganartu/Code/uni/comp3301/ass1/pth-2.0.7-preempt"
 exec_prefix="${prefix}"
 
 pth_prefix="$prefix"
@@ -38,7 +38,7 @@ pth_includedir="${prefix}/include"
 pth_mandir="${prefix}/man"
 pth_datadir="${prefix}/share"
 pth_acdir="${prefix}/share/aclocal"
-pth_cflags="-O2 -pipe"
+pth_cflags="-g -O2 -pipe -Wall -Wshadow -Wpointer-arith -Wcast-align -Winline -Wmissing-prototypes -Wmissing-declarations -Wnested-externs -Wno-long-long -fno-strict-aliasing"
 pth_ldflags=""
 pth_libs="-ldl -lnsl "
 pth_version="2.0.7 (08-Jun-2006)"

@@ -259,7 +259,7 @@
 #define PACKAGE_VERSION ""
 
 /* define to enable Pth debugging */
-/* #undef PTH_DEBUG */
+#define PTH_DEBUG 1
 
 /* define if using Dmalloc in GNU pth */
 /* #undef PTH_DMALLOC */
@@ -283,7 +283,7 @@
 #define PTH_STACKGROWTH -1
 
 /* define for the paths to syscall dynamic libraries */
-#define PTH_SYSCALL_LIBS "/usr/lib/libdl.so:/usr/lib/libnsl.so:/usr/lib/libc.so"
+#define PTH_SYSCALL_LIBS ""
 
 /* Define to 1 if you have the ANSI C header files. */
 #define STDC_HEADERS 1

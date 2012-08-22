@@ -44,6 +44,9 @@
 #include <sys/socket.h>
 #include <time.h>
 
+/* COMP3301 Assignment 1 modifications header */
+#include "pth_a1mods.h"
+
 /* library version */
 #define _PTH_VERS_C_AS_HEADER_
 #include "pth_vers.c"

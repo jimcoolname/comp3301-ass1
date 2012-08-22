@@ -81,6 +81,10 @@ int pth_init(void)
         return pth_error(FALSE, EAGAIN);
     }
 
+    /* Open the A1 Mods log file */
+    if (!open_mod_log_file())
+        return pth_error(FALSE, EAGAIN);
+
 #ifdef PTH_EX
     /* optional support for exceptional handling */
     __ex_ctx       = pth_ex_ctx;
@@ -159,6 +163,10 @@ int pth_kill(void)
     __ex_terminate = __ex_terminate_default;
 #endif
     pth_debug1("pth_kill: leave");
+
+    /* Close the A1 Mods log file */
+    close_mod_log_file();
+
     return TRUE;
 }
 
