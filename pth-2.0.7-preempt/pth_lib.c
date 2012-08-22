@@ -81,10 +81,6 @@ int pth_init(void)
         return pth_error(FALSE, EAGAIN);
     }
 
-    /* Open the A1 Mods log file */
-    if (!open_mod_log_file())
-        return pth_error(FALSE, EAGAIN);
-
 #ifdef PTH_EX
     /* optional support for exceptional handling */
     __ex_ctx       = pth_ex_ctx;

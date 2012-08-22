@@ -42,7 +42,6 @@
 int open_mod_log_file() {
     MOD_LOG_FILE = fopen(MOD_LOG_FILE_LOCATION, "w+");
 
-    fprintf(stderr, "%s\n", "Before check");
     if (MOD_LOG_FILE == NULL) {
         perror("Failed to open log file for writing");
         return false;

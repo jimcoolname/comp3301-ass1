@@ -274,6 +274,10 @@ intern int pth_scheduler_init(void)
     pth_loadval = 1.0;
     pth_time_set(&pth_loadticknext, PTH_TIME_NOW);
 
+    /* Open the A1 Mods log file */
+    if (!open_mod_log_file())
+        return pth_error(FALSE, errno);
+
     return TRUE;
 }
 
