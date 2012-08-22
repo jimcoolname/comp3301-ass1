@@ -80,6 +80,11 @@ struct pth_st {
     /* mutex ring */
     pth_ring_t     mutexring;            /* ring of aquired mutex structures            */
 
+    /* deadline attrs */
+    int deadline_c;                      /* execution time to run thread for            */
+    int deadline_t;                      /* deadline period                             */
+    int deadline_run_count;              /* number of runs in current period            */
+
 #ifdef PTH_EX
     /* per-thread exception handling */
     ex_ctx_t       ex_ctx;               /* exception handling context                  */

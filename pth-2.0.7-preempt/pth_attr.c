@@ -43,6 +43,8 @@ struct pth_attr_st {
     unsigned int a_cancelstate;
     unsigned int a_stacksize;
     char        *a_stackaddr;
+    int          a_deadline_c;
+    int          a_deadline_t;
 };
 
 #endif /* cpp */
@@ -91,6 +93,8 @@ int pth_attr_init(pth_attr_t a)
     a->a_cancelstate = PTH_CANCEL_DEFAULT;
     a->a_stacksize = 64*1024;
     a->a_stackaddr = NULL;
+    a->a_deadline_c = -1;
+    a->a_deadline_t = -1;
     return TRUE;
 }
 
@@ -304,6 +308,34 @@ intern int pth_attr_ctrl(int cmd, pth_attr_t a, int op, va_list ap)
                 return pth_error(FALSE, EPERM);
             dst = va_arg(ap, int *);
             *dst = (a->a_tid != NULL ? TRUE : FALSE);
+            break;
+        }
+        case PTH_ATTR_DEADLINE_C: {
+            /* deadline execution time */
+            int val, *src, *dst;
+            if (cmd == PTH_ATTR_SET) {
+                src = &val; val = va_arg(ap, int);
+                dst = (a->a_tid != NULL ? &a->a_tid->deadline_c : &a->a_deadline_c);
+            }
+            else {
+                src = (a->a_tid != NULL ? &a->a_tid->deadline_c : &a->a_deadline_c);
+                dst = va_arg(ap, int *);
+            }
+            *dst = *src;
+            break;
+        }
+        case PTH_ATTR_DEADLINE_T: {
+            /* deadline period length */
+            int val, *src, *dst;
+            if (cmd == PTH_ATTR_SET) {
+                src = &val; val = va_arg(ap, int);
+                dst = (a->a_tid != NULL ? &a->a_tid->deadline_t : &a->a_deadline_t);
+            }
+            else {
+                src = (a->a_tid != NULL ? &a->a_tid->deadline_t : &a->a_deadline_t);
+                dst = va_arg(ap, int *);
+            }
+            *dst = *src;
             break;
         }
         default:

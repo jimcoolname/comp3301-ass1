@@ -167,7 +167,9 @@ enum {
     PTH_ATTR_START_ARG,      /* RO [void *]            thread start argument             */
     PTH_ATTR_STATE,          /* RO [pth_state_t]       scheduling state                  */
     PTH_ATTR_EVENTS,         /* RO [pth_event_t]       events the thread is waiting for  */
-    PTH_ATTR_BOUND           /* RO [int]               whether object is bound to thread */
+    PTH_ATTR_BOUND,          /* RO [int]               whether object is bound to thread */
+    PTH_ATTR_DEADLINE_C,     /* RW [int]               execution time to run thread for  */
+    PTH_ATTR_DEADLINE_T      /* RW [int]               deadline period                   */
 };
 
     /* default thread attribute */

@@ -31,6 +31,7 @@ int main(int argc, char *argv[]) {
         pth_sleep(1);
 
         pth_attr_set(attr, PTH_ATTR_NAME, "child2");
+        pth_attr_set(attr, PTH_ATTR_DEADLINE_C, 3);
         pth_spawn(attr, thread_func, NULL);
 
         pth_sleep(1);

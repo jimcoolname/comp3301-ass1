@@ -258,6 +258,14 @@ pth_t pth_spawn(pth_attr_t attr, void *(*func)(void *), void *arg)
         t->cancelstate = attr->a_cancelstate;
         t->dispatches  = attr->a_dispatches;
         pth_util_cpystrn(t->name, attr->a_name, PTH_TCB_NAMELEN);
+
+        /* Initialised to -1 by default */
+        if (attr->a_deadline_c == -1)
+            attr->a_deadline_c = (pth_current != NULL) ? pth_current->deadline_c : 1;
+        if (attr->a_deadline_t == -1)
+            attr->a_deadline_t = (pth_current != NULL) ? pth_current->deadline_t : 10;
+        t->deadline_c = attr->a_deadline_c;
+        t->deadline_t = attr->a_deadline_t;
     }
     else if (pth_current != NULL) {
         /* overtake some fields from the parent thread */
@@ -268,6 +276,8 @@ pth_t pth_spawn(pth_attr_t attr, void *(*func)(void *), void *arg)
         pth_snprintf(t->name, PTH_TCB_NAMELEN, "%s.child@%d=0x%lx",
                      pth_current->name, (unsigned int)time(NULL),
                      (unsigned long)pth_current);
+        t->deadline_c = pth_current->deadline_c;
+        t->deadline_t = pth_current->deadline_t;
     }
     else {
         /* defaults */
@@ -277,7 +287,11 @@ pth_t pth_spawn(pth_attr_t attr, void *(*func)(void *), void *arg)
         t->dispatches  = 0;
         pth_snprintf(t->name, PTH_TCB_NAMELEN,
                      "user/%x", (unsigned int)time(NULL));
+        t->deadline_c = 1;
+        t->deadline_t = 10;
     }
+    /* Make sure this is initialised as zero */
+    t->deadline_run_count = 0;
 
     /* initialize the time points and ranges */
     pth_time_set(&ts, PTH_TIME_NOW);

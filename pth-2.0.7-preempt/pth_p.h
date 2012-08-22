@@ -438,6 +438,11 @@ struct pth_st {
     /* mutex ring */
     pth_ring_t     mutexring;            /* ring of aquired mutex structures            */
 
+    /* deadline attrs */
+    int deadline_c;                      /* execution time to run thread for            */
+    int deadline_t;                      /* deadline period                             */
+    int deadline_run_count;              /* number of runs in current period            */
+
 #ifdef PTH_EX
     /* per-thread exception handling */
     ex_ctx_t       ex_ctx;               /* exception handling context                  */
@@ -517,6 +522,8 @@ struct pth_attr_st {
     unsigned int a_cancelstate;
     unsigned int a_stacksize;
     char        *a_stackaddr;
+    int          a_deadline_c;
+    int          a_deadline_t;
 };
 
 #line 43 "pth_lib.c"
@@ -590,6 +597,7 @@ struct pth_attr_st {
 #define pth_time_mul __pth_time_mul
 #define pth_time_t2d __pth_time_t2d
 #define pth_time_t2i __pth_time_t2i
+#define pth_time_t2msi __pth_time_t2msi
 #define pth_time_pos __pth_time_pos
 #define pth_tcb_alloc __pth_tcb_alloc
 #define pth_tcb_free __pth_tcb_free
@@ -641,7 +649,7 @@ extern int pth_errno_storage;
 extern int pth_errno_flag;
 #line 40 "pth_time.c"
 extern pth_time_t pth_time_zero;
-#line 91 "pth_tcb.c"
+#line 96 "pth_tcb.c"
 extern const char *pth_state_names[];
 #line 33 "pth_sched.c"
 extern pth_t pth_main;
@@ -752,10 +760,12 @@ extern double pth_time_t2d(pth_time_t *);
 #line 166 "pth_time.c"
 extern int pth_time_t2i(pth_time_t *);
 #line 175 "pth_time.c"
+extern int pth_time_t2msi(pth_time_t *);
+#line 184 "pth_time.c"
 extern int pth_time_pos(pth_time_t *);
-#line 103 "pth_tcb.c"
+#line 108 "pth_tcb.c"
 extern pth_t pth_tcb_alloc(unsigned int, void *);
-#line 137 "pth_tcb.c"
+#line 142 "pth_tcb.c"
 extern void pth_tcb_free(pth_t);
 #line 42 "pth_util.c"
 extern int pth_util_sigdelete(int);
@@ -791,31 +801,31 @@ extern int pth_pqueue_contains(pth_pqueue_t *, pth_t);
 extern void pth_sched_housekeeping(void);
 #line 168 "pth_sched.c"
 extern void pth_sched_preempt(int);
-#line 196 "pth_sched.c"
+#line 198 "pth_sched.c"
 extern void pth_sched_enable_preempt(void);
-#line 233 "pth_sched.c"
+#line 235 "pth_sched.c"
 extern void pth_sched_bootstrap(void);
-#line 249 "pth_sched.c"
+#line 251 "pth_sched.c"
 extern int pth_scheduler_init(void);
-#line 285 "pth_sched.c"
+#line 287 "pth_sched.c"
 extern void pth_scheduler_drop(void);
-#line 317 "pth_sched.c"
+#line 319 "pth_sched.c"
 extern void pth_scheduler_kill(void);
-#line 362 "pth_sched.c"
+#line 364 "pth_sched.c"
 extern void *pth_scheduler(void *);
-#line 442 "pth_sched.c"
+#line 453 "pth_sched.c"
 extern void pth_sched_eventmanager(pth_time_t *, int);
-#line 901 "pth_sched.c"
+#line 912 "pth_sched.c"
 extern void pth_sched_eventmanager_sighandler(int);
 #line 95 "pth_data.c"
 extern void pth_key_destroydata(pth_t);
 #line 128 "pth_sync.c"
 extern void pth_mutex_releaseall(pth_t);
-#line 119 "pth_attr.c"
+#line 123 "pth_attr.c"
 extern int pth_attr_ctrl(int, pth_attr_t, int, va_list);
-#line 376 "pth_lib.c"
+#line 390 "pth_lib.c"
 extern int pth_thread_exists(pth_t);
-#line 388 "pth_lib.c"
+#line 402 "pth_lib.c"
 extern void pth_thread_cleanup(pth_t);
 #line 955 "pth_high.c"
 extern ssize_t pth_readv_faked(int, const struct iovec *, int);
