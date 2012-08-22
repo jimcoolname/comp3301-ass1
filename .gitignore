@@ -1,0 +1,8 @@
+*.o
+*.log
+*.a
+*.lo
+*.la
+*test*
+/pth-2.0.7-preempt/lib/*
+/pth-2.0.7-preempt/.*
