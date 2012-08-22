@@ -95,7 +95,7 @@ void a1_mod_kill() {
  * ============================================================================
  */
 void a1_mod_add_thread(pth_t t) {
-    if (pth_sched != NULL && pth_main != NULL && t != pth_sched && t != pth_main) {
+    if (a1_mod_is_user_thread(t)) {
 
         /* Only need to realloc the second and subsequent threads */
         if (user_threads_count++ > 0) {
@@ -138,4 +138,24 @@ void a1_mod_print_log_header() {
     for ( i = 0; i < user_threads_count; i++ ) {
         fprintf(MOD_LOG_FILE, " %7.7s", user_threads[i]->name);
     }
+}
+
+
+/* 
+ * ===  FUNCTION  =============================================================
+ *         Name:  a1_mod_is_user_thread
+ *
+ *  Description:  Returns true if the supplied thread was spawned by the user
+ *                and false otherwise
+ * 
+ *      Version:  0.0.1
+ *       Params:  pth_t t - the thread being checked
+ *      Returns:  bool true if spawned by user (specifically with pth_spawn)
+ *                bool false otherwise
+ *        Usage:  a1_mod_is_user_thread( pth_t t )
+ *      Outputs:  N/A
+ * ============================================================================
+ */
+bool a1_mod_is_user_thread(pth_t t) {
+    return pth_sched != NULL && pth_main != NULL && t != pth_sched && t != pth_main;
 }

@@ -51,10 +51,16 @@ void a1_mod_print_log_header();
 
 /* These declarations are globally available to the rest of the pth lib */
 
+int a1_mod_start_time = -1;
+
+/* Private API methods */
+
 extern int a1_mod_init();
 
 extern void a1_mod_kill();
 
 extern void a1_mod_add_thread(pth_t t);
+
+extern bool a1_mod_is_user_thread(pth_t t);
 
 #endif /* _PTH_A1_MODS_H_ */
