@@ -22,11 +22,14 @@
 static void *thread_func(void *arg);
 
 int main(int argc, char *argv[]) {
-  pth_init();
-  pth_spawn(PTH_ATTR_DEFAULT, thread_func, NULL);
-  pth_sleep(1);
-  printf("%s\n", "bar");
-  return 0;
+  if (pth_init()) {
+      pth_spawn(PTH_ATTR_DEFAULT, thread_func, NULL);
+      pth_sleep(1);
+      printf("%s\n", "bar");
+      pth_kill();
+      return 0;
+  }
+  return 1;
 }
 
 static void *thread_func(void *arg) {
