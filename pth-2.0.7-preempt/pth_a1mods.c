@@ -137,9 +137,16 @@ void a1_mod_print_log_header() {
 
     fprintf(MOD_LOG_FILE, "%-8.8s", "t");
     
+    /* Print out the info */
     for ( i = 0; i < user_threads_count; i++ ) {
-        fprintf(MOD_LOG_FILE, "%-8.8s", user_threads[i]->name);
+        if (i < user_threads_count - 1) {
+            fprintf(MOD_LOG_FILE, "%-8.8s", user_threads[i]->name);
+        } else {
+            fprintf(MOD_LOG_FILE, "%s", user_threads[i]->name);
+            break;
+        }
     }
+    fflush(MOD_LOG_FILE);
 }
 
 
