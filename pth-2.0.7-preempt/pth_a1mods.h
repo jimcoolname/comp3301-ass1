@@ -25,18 +25,27 @@
 #ifndef _PTH_A1_MODS_H_
 #define _PTH_A1_MODS_H_
 
-/* These globals only need to be seen in pth_a1mods.c */
+/* These "globals" only need to be seen in pth_a1mods.c */
 #ifdef _INCLUDE_A1_MODS_
 
 /* Boolean helpers */
 typedef int bool;
-bool false = 0;
-bool true = 1;
+const bool false = 0;
+const bool true = 1;
 
 /* Pointer to log file created on initialisation */
 FILE* MOD_LOG_FILE;
 
-char* MOD_LOG_FILE_LOCATION = "sched.log";
+const char* MOD_LOG_FILE_LOCATION = "sched.log";
+
+bool A1_MOD_LOG_FILE_FIRST_LINE = 1;
+
+/* Array of user threads */
+pth_t *user_threads;
+int user_threads_count = 0;
+
+/* Local function defs */
+void a1_mod_print_log_header();
 
 #endif /* _PTH_A1_MODS_C_ */
 
