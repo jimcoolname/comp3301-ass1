@@ -261,9 +261,11 @@ pth_t pth_spawn(pth_attr_t attr, void *(*func)(void *), void *arg)
 
         /* Initialised to -1 by default */
         if (attr->a_deadline_c == -1)
-            attr->a_deadline_c = (pth_current != NULL) ? pth_current->deadline_c : 1;
+            attr->a_deadline_c = (pth_current != NULL && a1_mod_is_user_thread(pth_current))
+                ? pth_current->deadline_c : 1;
         if (attr->a_deadline_t == -1)
-            attr->a_deadline_t = (pth_current != NULL) ? pth_current->deadline_t : 10;
+            attr->a_deadline_t = (pth_current != NULL && a1_mod_is_user_thread(pth_current))
+                ? pth_current->deadline_t : 10;
         t->deadline_c = attr->a_deadline_c;
         t->deadline_t = attr->a_deadline_t;
     }
@@ -293,6 +295,12 @@ pth_t pth_spawn(pth_attr_t attr, void *(*func)(void *), void *arg)
     /* These are the same regardless of where the other vals come from */
     t->deadline_t_counter = t->deadline_t;
     t->deadline_run_count = 0;
+
+    /* Validating thread values */
+    if (t->deadline_c > t->deadline_t)
+        return pth_error((pth_t)NULL, ERANGE);
+    if (!a1_mod_is_schedulable(t))
+        return pth_error((pth_t)NULL, EAGAIN);
 
     /* initialize the time points and ranges */
     pth_time_set(&ts, PTH_TIME_NOW);

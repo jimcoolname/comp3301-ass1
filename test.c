@@ -26,18 +26,28 @@ int main(int argc, char *argv[]) {
 
         pth_attr_t attr = pth_attr_new();
         pth_attr_set(attr, PTH_ATTR_NAME, "child1");
-        pth_spawn(attr, thread_func, NULL);
+        if (!pth_spawn(attr, thread_func, NULL))
+            perror("Failed to spawn thread");
 
         pth_sleep(1);
 
         pth_attr_set(attr, PTH_ATTR_NAME, "child2");
         pth_attr_set(attr, PTH_ATTR_DEADLINE_C, 3);
-        pth_spawn(attr, thread_func, NULL);
+        if (!pth_spawn(attr, thread_func, NULL))
+            perror("Failed to spawn thread");
 
         pth_sleep(1);
 
         pth_attr_set(attr, PTH_ATTR_NAME, "child3");
-        pth_spawn(attr, thread_func, NULL);
+        if (!pth_spawn(attr, thread_func, NULL))
+            perror("Failed to spawn thread");
+
+        pth_sleep(1);
+
+        pth_attr_set(attr, PTH_ATTR_NAME, "child4");
+        pth_attr_set(attr, PTH_ATTR_DEADLINE_C, 4);
+        if (!pth_spawn(attr, thread_func, NULL))
+            perror("Failed to spawn thread");
 
         pth_sleep(1);
 
