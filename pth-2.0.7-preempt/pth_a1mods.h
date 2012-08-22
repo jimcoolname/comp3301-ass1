@@ -65,4 +65,6 @@ extern int a1_mod_is_user_thread(pth_t t);
 
 extern void a1_mod_log_print_line_start(pth_time_t t, pth_time_t running);
 
+extern void a1_mod_log_print_line_end(pth_t t, char py);
+
 #endif /* _PTH_A1_MODS_H_ */

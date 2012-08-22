@@ -181,8 +181,10 @@ intern void pth_sched_preempt(int signum)
 
     if (signum == SIGVTALRM) {
         pth_debug2("pth_sched_preempt: thread \"%s\" was preempted", pth_current->name);
+        a1_mod_log_print_line_end(pth_current, 'P');
     } else {
         pth_debug2("pth_sched_preempt: thread \"%s\" yielded control to scheduler", pth_current->name);
+        a1_mod_log_print_line_end(pth_current, 'Y');
     }
 
     /* call housekeeping code while the scheduler has control */

@@ -197,3 +197,45 @@ void a1_mod_log_print_line_start(pth_time_t t, pth_time_t running) {
 
     fprintf(MOD_LOG_FILE, "\n%-8.8s", slice_s);
 }
+
+
+/* 
+ * ===  FUNCTION  =============================================================
+ *         Name:  a1_mod_log_print_line_end
+ *
+ *  Description:  Loops through and prints the remainder of the log entry
+ *                displaying what yielded or was preempted.
+ * 
+ *      Version:  0.0.1
+ *       Params:  pth_t t - The thread that was ended
+ *                char py - The method by which it returned to scheduler
+ *      Returns:  void
+ *        Usage:  a1_mod_log_print_line_end( pth_t t, char py )
+ *      Outputs:  N/A
+ * ============================================================================
+ */
+void a1_mod_log_print_line_end(pth_t t, char py) {
+    int i;
+    char str[9];
+    char result[5];
+    snprintf(result, 5, "+++%c", py);
+
+    for ( i = 0; i < user_threads_count; i++ ) {
+        /* Check if this is the thread we just finished with */
+        str[0] = '\0';
+        if (t == user_threads[i]) {
+            strcpy(str, result);
+        }
+
+        /* Print out the info */
+        if (i != user_threads_count - 1 && !strcmp(str, "")) {
+            fprintf(MOD_LOG_FILE, "%-8.8s", str);
+        } else {
+            fprintf(MOD_LOG_FILE, "%s", str);
+        }
+
+        /* Don't need to do anything else if we just printed a result */
+        if (strcmp(str, ""))
+            break;
+    }
+}
