@@ -1,5 +1,5 @@
 /*
- * =====================================================================================
+ * ============================================================================
  *
  *       Filename:  test.c
  *
@@ -13,7 +13,7 @@
  *         Author:  Tony Lee (Roganartu), uni@roganartu.com
  *   Organization:  
  *
- * =====================================================================================
+ * ============================================================================
  */
 #include <stdlib.h>
 #include <stdio.h>
@@ -24,7 +24,8 @@ static void *thread_func(void *arg);
 int main(int argc, char *argv[]) {
   if (pth_init()) {
       pth_spawn(PTH_ATTR_DEFAULT, thread_func, NULL);
-      pth_sleep(1);
+      pth_spawn(PTH_ATTR_DEFAULT, thread_func, NULL);
+      pth_sleep(5);
       printf("%s\n", "bar");
       pth_kill();
       return 0;
@@ -33,6 +34,8 @@ int main(int argc, char *argv[]) {
 }
 
 static void *thread_func(void *arg) {
+    pth_yield(NULL);
+  pth_sleep(2);
   printf("%s\n", "in here");
   return NULL;
 }

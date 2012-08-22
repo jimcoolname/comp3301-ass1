@@ -813,9 +813,9 @@ extern void pth_key_destroydata(pth_t);
 extern void pth_mutex_releaseall(pth_t);
 #line 119 "pth_attr.c"
 extern int pth_attr_ctrl(int, pth_attr_t, int, va_list);
-#line 373 "pth_lib.c"
+#line 376 "pth_lib.c"
 extern int pth_thread_exists(pth_t);
-#line 385 "pth_lib.c"
+#line 388 "pth_lib.c"
 extern void pth_thread_cleanup(pth_t);
 #line 955 "pth_high.c"
 extern ssize_t pth_readv_faked(int, const struct iovec *, int);

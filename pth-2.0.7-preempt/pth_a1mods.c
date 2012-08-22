@@ -69,3 +69,23 @@ void a1_mod_kill() {
         fclose(MOD_LOG_FILE);
     MOD_LOG_FILE = NULL;
 }
+
+
+/* 
+ * ===  FUNCTION  =============================================================
+ *         Name:  a1_mod_add_thread
+ *
+ *  Description:  Adds a new thread to the log file
+ * 
+ *      Version:  0.0.1
+ *       Params:  pth_t *t - Pointer to thread struct
+ *      Returns:  void
+ *        Usage:  a1_mod_add_thread( pth_t *t )
+ *      Outputs:  N/A
+ * ============================================================================
+ */
+void a1_mod_add_thread(pth_t t) {
+    if (pth_sched != NULL && pth_main != NULL && t != pth_sched && t != pth_main) {
+        fprintf(MOD_LOG_FILE, "t %s\n", t->name);
+    }
+}

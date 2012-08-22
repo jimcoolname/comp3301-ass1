@@ -19,6 +19,9 @@
  * ============================================================================
  */
 
+#include "pth.h"
+#include "pth_p.h"
+
 #ifndef _PTH_A1_MODS_H_
 #define _PTH_A1_MODS_H_
 
@@ -42,5 +45,7 @@ char* MOD_LOG_FILE_LOCATION = "sched.log";
 extern int a1_mod_init();
 
 extern void a1_mod_kill();
+
+extern void a1_mod_add_thread(pth_t t);
 
 #endif /* _PTH_A1_MODS_H_ */

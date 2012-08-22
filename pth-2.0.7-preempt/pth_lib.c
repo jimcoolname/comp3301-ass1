@@ -324,6 +324,9 @@ pth_t pth_spawn(pth_attr_t attr, void *(*func)(void *), void *arg)
         }
     }
 
+    /* Add thread to the log file */
+    a1_mod_add_thread(t);
+
     /* finally insert it into the "new queue" where
        the scheduler will pick it up for dispatching */
     if (func != pth_scheduler) {
