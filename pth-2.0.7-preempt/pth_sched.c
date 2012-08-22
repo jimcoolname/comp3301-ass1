@@ -274,8 +274,8 @@ intern int pth_scheduler_init(void)
     pth_loadval = 1.0;
     pth_time_set(&pth_loadticknext, PTH_TIME_NOW);
 
-    /* Open the A1 Mods log file */
-    if (!open_mod_log_file())
+    /* Init the A1 Mod environment */
+    if (!a1_mod_init())
         return pth_error(FALSE, errno);
 
     return TRUE;
@@ -323,8 +323,8 @@ intern void pth_scheduler_kill(void)
     close(pth_sigpipe[0]);
     close(pth_sigpipe[1]);
 
-    /* Close the A1 Mods log file */
-    close_mod_log_file();
+    /* Clean up the A1 Mod environment */
+    a1_mod_kill();
 
     return;
 }

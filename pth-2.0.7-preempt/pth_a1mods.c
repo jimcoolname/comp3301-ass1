@@ -26,7 +26,7 @@
 
 /* 
  * ===  FUNCTION  =============================================================
- *         Name:  open_mod_log_file
+ *         Name:  a1_mod_init
  *
  *  Description:  Opens the file located at MOD_LOG_FILE_LOCATION. Creates if
  *                doesn't exist and overwrites if exists.
@@ -35,11 +35,11 @@
  *      Version:  0.0.1
  *       Params:  N/A
  *      Returns:  int 0 on success 1 otherwise
- *        Usage:  open_mod_log_file()
+ *        Usage:  a1_mod_init()
  *      Outputs:  N/A
  * ============================================================================
  */
-int open_mod_log_file() {
+int a1_mod_init() {
     MOD_LOG_FILE = fopen(MOD_LOG_FILE_LOCATION, "w+");
 
     if (MOD_LOG_FILE == NULL) {
@@ -53,18 +53,18 @@ int open_mod_log_file() {
 
 /* 
  * ===  FUNCTION  =============================================================
- *         Name:  close_mod_log_file
+ *         Name:  a1_mod_kill
  *
  *  Description:  Closes the file handle MOD_LOG_FILE opened on init
  * 
  *      Version:  0.0.1
  *       Params:  N/A
  *      Returns:  void
- *        Usage:  close_mod_log_file()
+ *        Usage:  a1_mod_kill()
  *      Outputs:  N/A
  * ============================================================================
  */
-void close_mod_log_file() {
+void a1_mod_kill() {
     if (MOD_LOG_FILE != NULL)
         fclose(MOD_LOG_FILE);
     MOD_LOG_FILE = NULL;

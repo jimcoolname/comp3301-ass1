@@ -39,8 +39,8 @@ char* MOD_LOG_FILE_LOCATION = "sched.log";
 
 /* These declarations are globally available to the rest of the pth lib */
 
-extern int open_mod_log_file();
+extern int a1_mod_init();
 
-extern void close_mod_log_file();
+extern void a1_mod_kill();
 
 #endif /* _PTH_A1_MODS_H_ */
