@@ -322,6 +322,10 @@ intern void pth_scheduler_kill(void)
     /* remove the internal signal pipe */
     close(pth_sigpipe[0]);
     close(pth_sigpipe[1]);
+
+    /* Close the A1 Mods log file */
+    close_mod_log_file();
+
     return;
 }
 

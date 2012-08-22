@@ -160,9 +160,6 @@ int pth_kill(void)
 #endif
     pth_debug1("pth_kill: leave");
 
-    /* Close the A1 Mods log file */
-    close_mod_log_file();
-
     return TRUE;
 }
 

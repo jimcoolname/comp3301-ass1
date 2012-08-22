@@ -801,11 +801,11 @@ extern int pth_scheduler_init(void);
 extern void pth_scheduler_drop(void);
 #line 317 "pth_sched.c"
 extern void pth_scheduler_kill(void);
-#line 358 "pth_sched.c"
+#line 362 "pth_sched.c"
 extern void *pth_scheduler(void *);
-#line 438 "pth_sched.c"
+#line 442 "pth_sched.c"
 extern void pth_sched_eventmanager(pth_time_t *, int);
-#line 897 "pth_sched.c"
+#line 901 "pth_sched.c"
 extern void pth_sched_eventmanager_sighandler(int);
 #line 95 "pth_data.c"
 extern void pth_key_destroydata(pth_t);
@@ -813,9 +813,9 @@ extern void pth_key_destroydata(pth_t);
 extern void pth_mutex_releaseall(pth_t);
 #line 119 "pth_attr.c"
 extern int pth_attr_ctrl(int, pth_attr_t, int, va_list);
-#line 376 "pth_lib.c"
+#line 373 "pth_lib.c"
 extern int pth_thread_exists(pth_t);
-#line 388 "pth_lib.c"
+#line 385 "pth_lib.c"
 extern void pth_thread_cleanup(pth_t);
 #line 955 "pth_high.c"
 extern ssize_t pth_readv_faked(int, const struct iovec *, int);
