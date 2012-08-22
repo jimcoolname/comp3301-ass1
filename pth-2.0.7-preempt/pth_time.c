@@ -171,6 +171,15 @@ intern int pth_time_t2i(pth_time_t *t)
     return i;
 }
 
+/* convert a time structure into a integer value with accurate microseconds */
+intern int pth_time_t2msi(pth_time_t *t)
+{
+    int i;
+
+    i = (t->tv_sec*1000000 + t->tv_usec) / 1000;
+    return i;
+}
+
 /* check whether time is positive */
 intern int pth_time_pos(pth_time_t *t)
 {

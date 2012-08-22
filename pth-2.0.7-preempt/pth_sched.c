@@ -415,11 +415,20 @@ intern void *pth_scheduler(void *dummy)
 
     /* update thread times */
     pth_time_set(&pth_current->lastran, PTH_TIME_NOW);
-
+    
     /* update scheduler times */
     pth_time_set(&running, &pth_current->lastran);
     pth_time_sub(&running, &snapshot);
     pth_time_add(&pth_sched->running, &running);
+
+    /* A1 Mod time updates */
+    if (a1_mod_is_user_thread(pth_current)) {
+        if (pth_time_equal(a1_mod_start_time, *PTH_TIME_ZERO))
+            pth_time_set(&a1_mod_start_time, PTH_TIME_NOW);
+        fprintf(stderr, "Lastran: %d\n", pth_time_t2msi(&pth_current->lastran));
+        a1_mod_log_print_line_start(pth_current->lastran, running);
+    }
+
 
     /* ** ENTERING THREAD ** - by switching the machine context */
     pth_current->dispatches++;
