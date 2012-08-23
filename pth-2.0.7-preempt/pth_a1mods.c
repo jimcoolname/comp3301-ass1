@@ -189,11 +189,11 @@ int a1_mod_is_user_thread(pth_t t) {
  *      Version:  0.0.1
  *       Params:  pth_time_t t - Time object
  *      Returns:  void
- *        Usage:  a1_mod_log_print_line_start( pth_time_t t, pth_time_t running )
+ *        Usage:  a1_mod_log_print_line_start( pth_time_t t, pth_time_t running, int dummy )
  *      Outputs:  N/A
  * ============================================================================
  */
-void a1_mod_log_print_line_start(pth_time_t t, pth_time_t running) {
+void a1_mod_log_print_line_start(pth_time_t t, pth_time_t running, int dummy) {
     /* Don't do anything if we don't have a start time yet */
     if (pth_time_equal(a1_mod_start_time, *PTH_TIME_ZERO))
         return;
@@ -217,7 +217,10 @@ void a1_mod_log_print_line_start(pth_time_t t, pth_time_t running) {
         snprintf(slice_s, slice_s_size, "%d", slice_time);
     }
 
-    fprintf(MOD_LOG_FILE, "\n%-8.8s", slice_s);
+    if (dummy)
+        fprintf(MOD_LOG_FILE, "\n%s", slice_s);
+    else
+        fprintf(MOD_LOG_FILE, "\n%-8.8s", slice_s);
 }
 
 

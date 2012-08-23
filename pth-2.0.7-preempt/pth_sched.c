@@ -442,8 +442,11 @@ intern void *pth_scheduler(void *dummy)
         if (pth_time_equal(a1_mod_start_time, *PTH_TIME_ZERO))
             pth_time_set(&a1_mod_start_time, PTH_TIME_NOW);
     }
+
+    /* Print time portion of line if user thread or dummy thread */
     if (pth_current == a1_mod_dummy_thread || a1_mod_is_user_thread(pth_current))
-        a1_mod_log_print_line_start(pth_current->lastran, pth_sched->running);
+        a1_mod_log_print_line_start(pth_current->lastran, pth_sched->running,
+                pth_current == a1_mod_dummy_thread);
 
 
     /* ** ENTERING THREAD ** - by switching the machine context */
