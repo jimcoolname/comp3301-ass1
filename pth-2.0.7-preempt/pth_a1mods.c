@@ -323,22 +323,30 @@ void a1_mod_update_run_count(pth_t t) {
  * 
  *      Version:  0.0.1
  *       Params:  pth_t t - Thread to check
+ *                pth_pqueue_t queues[4] - Array of queues to check
  *      Returns:  bool true if schedulable
  *                bool false otherwise
- *        Usage:  a1_mod_is_schedulable( pth_t t )
+ *        Usage:  a1_mod_is_schedulable( pth_t t, pth_pqueue_t queues[4] )
  *      Outputs:  N/A
  * ============================================================================
  */
-int a1_mod_is_schedulable(pth_t t) {
+int a1_mod_is_schedulable(pth_t t, pth_pqueue_t* queues[]) {
     int i;
     float total;
-    pth_t ut;
+    pth_t head;
 
     total = ((float) t->deadline_c / (float) t->deadline_t);
 
-    for ( i = 0; i < user_threads_count; i++ ) {
-        ut = user_threads[i];
-        total += (float) ut->deadline_c / (float) ut->deadline_t;
+    for ( i = 0; i < 4; i++ ) {
+        head = pth_pqueue_head(queues[i]);
+
+        /* Find the lowest deadline */
+        while (head != NULL) {
+            if (head != pth_main) {
+                total += (float) head->deadline_c / (float) head->deadline_t;
+            }
+            head = pth_pqueue_walk(queues[i], head, PTH_WALK_NEXT);
+        }
     }
 
     return (total <= 1.0);

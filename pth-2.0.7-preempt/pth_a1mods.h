@@ -78,7 +78,7 @@ extern void a1_mod_update_deadlines();
 
 extern void a1_mod_update_run_count(pth_t t);
 
-extern int a1_mod_is_schedulable(pth_t t);
+extern int a1_mod_is_schedulable(pth_t t, pth_pqueue_t* queues[]);
 
 extern void *a1_mod_dummy_thread_func(void *arg);
 

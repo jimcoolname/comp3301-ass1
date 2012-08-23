@@ -302,7 +302,8 @@ pth_t pth_spawn(pth_attr_t attr, void *(*func)(void *), void *arg)
     /* Validating thread values */
     if (t->deadline_c > t->deadline_t)
         return pth_error((pth_t)NULL, ERANGE);
-    if (!a1_mod_is_schedulable(t))
+    pth_pqueue_t* queues[] = {&pth_NQ, &pth_RQ, &pth_WQ, &pth_SQ};
+    if (!a1_mod_is_schedulable(t, queues))
         return pth_error((pth_t)NULL, EAGAIN);
 
     /* initialize the time points and ranges */
