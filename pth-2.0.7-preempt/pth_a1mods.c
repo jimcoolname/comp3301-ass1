@@ -311,7 +311,8 @@ void a1_mod_update_deadlines() {
  * ============================================================================
  */
 void a1_mod_update_run_count(pth_t t) {
-    t->deadline_run_count++;
+    if (t != NULL)
+        t->deadline_run_count++;
 }
 
 

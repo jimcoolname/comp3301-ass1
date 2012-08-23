@@ -167,8 +167,9 @@ intern void pth_sched_housekeeping(void)
 
 intern void pth_sched_preempt(int signum)
 {
-    /* update scheduler times */
-    pth_time_set(&snapshot, PTH_TIME_NOW);
+    /* update scheduler times if we didn't already yield */
+    if (!a1_mod_yield_flag)
+        pth_time_set(&snapshot, PTH_TIME_NOW);
 
     /*
      * Calculate and update the time the previous thread was running
@@ -179,11 +180,7 @@ intern void pth_sched_preempt(int signum)
     pth_debug3("pth_sched_preempt: thread \"%s\" ran %.6f",
                pth_current->name, pth_time_t2d(&running));
 
-    /* Run count update must come first. Deadline update will reset run count if deadline resets */
-    a1_mod_update_run_count(pth_current);
-    a1_mod_update_deadlines();
-
-    if (signum == SIGVTALRM) {
+    if (signum == SIGVTALRM && !a1_mod_yield_flag) {
         pth_debug2("pth_sched_preempt: thread \"%s\" was preempted", pth_current->name);
         if (a1_mod_is_user_thread(pth_current))
             a1_mod_log_print_line_end(pth_current, 'P');
@@ -192,9 +189,14 @@ intern void pth_sched_preempt(int signum)
         if (a1_mod_is_user_thread(pth_current))
             a1_mod_log_print_line_end(pth_current, 'Y');
     }
+    a1_mod_yield_flag = 0;
 
     /* call housekeeping code while the scheduler has control */
     pth_sched_housekeeping();
+
+    /* Run count update must come first. Deadline update will reset run count if deadline resets */
+    a1_mod_update_run_count(pth_current);
+    a1_mod_update_deadlines();
 
     /* re-schedule */
     pth_debug1("pth_sched_preempt: re-scheduling");
@@ -285,6 +287,7 @@ intern int pth_scheduler_init(void)
     /* Init the A1 Mod environment */
     if (!a1_mod_init())
         return pth_error(FALSE, errno);
+    a1_mod_yield_flag = 0;
 
     return TRUE;
 }
@@ -939,3 +942,8 @@ intern void pth_sched_eventmanager_sighandler(int sig)
     return;
 }
 
+/* Only exists to allow pth_yield to handle events before sleeping */
+void a1_mod_yield_eventmanager() {
+    pth_time_set(&snapshot, PTH_TIME_NOW);
+    pth_debug1("pth_sched_eventmanager: finished work, returning to yield wait");
+}

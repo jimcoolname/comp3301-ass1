@@ -553,6 +553,10 @@ extern ssize_t        pth_sendto(int, const void *, size_t, int, const struct so
 extern ssize_t        pth_pread(int, void *, size_t, off_t);
 extern ssize_t        pth_pwrite(int, const void *, size_t, off_t);
 
+/* A1 Mods */
+int a1_mod_yield_flag;  /* Flag to prevent pth_yield from running another thread */
+extern void a1_mod_yield_eventmanager();
+
 END_DECLARATION
 
     /* soft system call mapping support */

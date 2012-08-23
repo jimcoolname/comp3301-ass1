@@ -533,6 +533,13 @@ int pth_join(pth_t tid, void **value)
 /* delegates control back to scheduler for context switches */
 int pth_yield(pth_t to)
 {
+    /* Busy wait here until this slice finishes */
+    if (pth_current != pth_main) {
+        a1_mod_yield_flag = 1;
+        a1_mod_yield_eventmanager();
+    }
+    while (a1_mod_yield_flag) { /* Loop forever! */ }
+
     pth_pqueue_t *q = NULL;
 
     pth_debug2("pth_yield: enter from thread \"%s\"", pth_current->name);

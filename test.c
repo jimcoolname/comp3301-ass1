@@ -67,7 +67,6 @@ int main(int argc, char *argv[]) {
 }
 
 static void *thread_func(void *arg) {
-    pth_yield(NULL);
     while (TRUE) {
         // Do nothing
     }
@@ -75,8 +74,6 @@ static void *thread_func(void *arg) {
 }
 
 static void *dead_thread_func(void *arg) {
-    pth_yield(NULL);
-    pth_sleep(1);
     pth_exit(0);
     return NULL;
 }
