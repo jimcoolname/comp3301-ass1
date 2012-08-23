@@ -166,7 +166,8 @@ void a1_mod_print_log_header() {
  * ============================================================================
  */
 int a1_mod_is_user_thread(pth_t t) {
-    return pth_sched != NULL && pth_main != NULL && t != pth_sched && t != pth_main;
+    return pth_sched != NULL && pth_main != NULL &&
+        t != pth_sched && t != pth_main && !t->dummy;
 }
 
 
