@@ -391,7 +391,6 @@ int a1_mod_earliest_deadline_first(pth_pqueue_t *q) {
         }
         if (a1_mod_is_runnable(head)) {
             favourite = a1_mod_lowest_thread(head, favourite);
-            fprintf(stderr, "%s\n", favourite->name);
         }
         head = pth_pqueue_walk(q, head, PTH_WALK_NEXT);
     }
