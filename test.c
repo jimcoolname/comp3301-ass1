@@ -20,6 +20,7 @@
 #include "./pth-2.0.7-preempt/pth.h"
 
 static void *thread_func(void *arg);
+static void *dead_thread_func(void *arg);
 
 int main(int argc, char *argv[]) {
     if (pth_init()) {
@@ -27,6 +28,13 @@ int main(int argc, char *argv[]) {
         pth_attr_t attr = pth_attr_new();
         pth_attr_set(attr, PTH_ATTR_NAME, "child1");
         if (!pth_spawn(attr, thread_func, NULL))
+            perror("Failed to spawn thread");
+
+        pth_sleep(1);
+
+        pth_attr_set(attr, PTH_ATTR_NAME, "dead");
+        pth_attr_set(attr, PTH_ATTR_DEADLINE_C, 7);
+        if (!pth_spawn(attr, dead_thread_func, NULL))
             perror("Failed to spawn thread");
 
         pth_sleep(1);
@@ -63,5 +71,12 @@ static void *thread_func(void *arg) {
     while (TRUE) {
         // Do nothing
     }
+    return NULL;
+}
+
+static void *dead_thread_func(void *arg) {
+    pth_yield(NULL);
+    pth_sleep(1);
+    pth_exit(0);
     return NULL;
 }
