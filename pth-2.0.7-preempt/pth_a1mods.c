@@ -285,7 +285,7 @@ void a1_mod_update_deadlines() {
     for ( i = 0; i < user_threads_count; i++ ) {
         t = user_threads[i];
         t->deadline_t_counter--;
-        if (t->deadline_t_counter == 0) {
+        if (t->deadline_t_counter == -1) {
             /* Reset deadline period */
             t->deadline_t_counter = t->deadline_t;
             t->deadline_run_count = 0;
