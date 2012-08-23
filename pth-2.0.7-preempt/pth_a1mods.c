@@ -460,6 +460,10 @@ pth_t a1_mod_lowest_thread(pth_t t1, pth_t t2) {
         return t2;
 
     /* Tiebreaker */
+    if (t1 == pth_current)
+        return t1;
+    if (t2 == pth_current)
+        return t2;
     if (pth_time_cmp(&t1->spawned, &t2->spawned) <= 0)
         return t1;
     else
