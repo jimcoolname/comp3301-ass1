@@ -257,6 +257,7 @@ pth_t pth_spawn(pth_attr_t attr, void *(*func)(void *), void *arg)
         t->joinable    = attr->a_joinable;
         t->cancelstate = attr->a_cancelstate;
         t->dispatches  = attr->a_dispatches;
+        t->dummy       = attr->a_dummy;
         pth_util_cpystrn(t->name, attr->a_name, PTH_TCB_NAMELEN);
 
         /* Initialised to -1 by default */
@@ -275,6 +276,7 @@ pth_t pth_spawn(pth_attr_t attr, void *(*func)(void *), void *arg)
         t->joinable    = pth_current->joinable;
         t->cancelstate = pth_current->cancelstate;
         t->dispatches  = 0;
+        t->dummy       = pth_current->dummy;
         pth_snprintf(t->name, PTH_TCB_NAMELEN, "%s.child@%d=0x%lx",
                      pth_current->name, (unsigned int)time(NULL),
                      (unsigned long)pth_current);
@@ -287,6 +289,7 @@ pth_t pth_spawn(pth_attr_t attr, void *(*func)(void *), void *arg)
         t->joinable    = TRUE;
         t->cancelstate = PTH_CANCEL_DEFAULT;
         t->dispatches  = 0;
+        t->dummy       = FALSE;
         pth_snprintf(t->name, PTH_TCB_NAMELEN,
                      "user/%x", (unsigned int)time(NULL));
         t->deadline_c = 1;

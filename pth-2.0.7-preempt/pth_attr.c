@@ -45,6 +45,7 @@ struct pth_attr_st {
     char        *a_stackaddr;
     int          a_deadline_c;
     int          a_deadline_t;
+    int          a_dummy;
 };
 
 #endif /* cpp */
@@ -95,6 +96,7 @@ int pth_attr_init(pth_attr_t a)
     a->a_stackaddr = NULL;
     a->a_deadline_c = -1;
     a->a_deadline_t = -1;
+    a->a_dummy = FALSE;
     return TRUE;
 }
 
@@ -333,6 +335,20 @@ intern int pth_attr_ctrl(int cmd, pth_attr_t a, int op, va_list ap)
             }
             else {
                 src = (a->a_tid != NULL ? &a->a_tid->deadline_t : &a->a_deadline_t);
+                dst = va_arg(ap, int *);
+            }
+            *dst = *src;
+            break;
+        }
+        case PTH_ATTR_DUMMY: {
+            /* whether the thread is a dummy or not */
+            int val, *src, *dst;
+            if (cmd == PTH_ATTR_SET) {
+                src = &val; val = va_arg(ap, int);
+                dst = (a->a_tid != NULL ? &a->a_tid->dummy : &a->a_dummy);
+            }
+            else {
+                src = (a->a_tid != NULL ? &a->a_tid->dummy : &a->a_dummy);
                 dst = va_arg(ap, int *);
             }
             *dst = *src;

@@ -86,6 +86,8 @@ struct pth_st {
     int deadline_t_counter;              /* deadline period countdown                   */
     int deadline_run_count;              /* number of runs in current period            */
 
+    int dummy;                           /* whether the thread is a dummy               */
+
 #ifdef PTH_EX
     /* per-thread exception handling */
     ex_ctx_t       ex_ctx;               /* exception handling context                  */
