@@ -58,7 +58,8 @@ int a1_mod_init() {
     pth_attr_t attr = pth_attr_new();
     pth_attr_set(attr, PTH_ATTR_NAME, "dummy");
     pth_attr_set(attr, PTH_ATTR_DUMMY, TRUE);
-    if (!pth_spawn(attr, a1_mod_dummy_thread_func, NULL))
+    a1_mod_dummy_thread = pth_spawn(attr, a1_mod_dummy_thread_func, NULL);
+    if (!a1_mod_dummy_thread)
         perror("Failed to spawn dummy thread");
 
     return true;
@@ -193,6 +194,10 @@ int a1_mod_is_user_thread(pth_t t) {
  * ============================================================================
  */
 void a1_mod_log_print_line_start(pth_time_t t, pth_time_t running) {
+    /* Don't do anything if we don't have a start time yet */
+    if (pth_time_equal(a1_mod_start_time, *PTH_TIME_ZERO))
+        return;
+
     /* Work out the diff between start time and time now */
     int t_ms = pth_time_t2msi(&t);
     int start_ms = pth_time_t2msi(&a1_mod_start_time);
@@ -353,4 +358,102 @@ int a1_mod_is_schedulable(pth_t t) {
  */
 void *a1_mod_dummy_thread_func(void *arg) {
     while (true) { /* Loop forever! */ }
+}
+
+
+/* 
+ * ===  FUNCTION  =============================================================
+ *         Name:  a1_mod_earliest_deadline_first
+ *
+ *  Description:  This is the heart of A1 Mod. This is where the pth_pqueue
+ *                shuffling happens. Takes a pth_pqueue, walks through it,
+ *                storing the lowest deadline it finds. Does tiebreaking as
+ *                it goes. Returns TRUE if a schedulable thread is found, FALSE
+ *                otherwise.
+ * 
+ *      Version:  0.0.1
+ *       Params:  pth_pqueue_t q - The queue to manipulate
+ *      Returns:  bool true if schedulable thread found
+ *                bool false otherwise
+ *        Usage:  a1_mod_earliest_deadline_first( pth_pqueue_t *q )
+ *      Outputs:  N/A
+ * ============================================================================
+ */
+int a1_mod_earliest_deadline_first(pth_pqueue_t *q) {
+    pth_t head = pth_pqueue_head(q);
+    pth_t favourite = NULL;
+
+    /* Find the lowest deadline */
+    while (head != NULL) {
+        if (head == pth_main) {
+            favourite = head;
+            break;
+        }
+        if (a1_mod_is_runnable(head)) {
+            favourite = a1_mod_lowest_thread(head, favourite);
+            fprintf(stderr, "%s\n", favourite->name);
+        }
+        head = pth_pqueue_walk(q, head, PTH_WALK_NEXT);
+    }
+
+    if (favourite != NULL) {
+        pth_pqueue_favorite(q, favourite);
+        return true;
+    } else {
+        return false;
+    }
+}
+
+
+/* 
+ * ===  FUNCTION  =============================================================
+ *         Name:  a1_mod_is_runnable
+ *
+ *  Description:  Checks whether a thread is eligible to be run in the current
+ *                time slice
+ * 
+ *      Version:  0.0.1
+ *       Params:  pth_t t
+ *      Returns:  bool true if runnable
+ *                bool false otherwise
+ *        Usage:  a1_mod_is_runnable( pth_t t )
+ *      Outputs:  N/A
+ * ============================================================================
+ */
+bool a1_mod_is_runnable(pth_t t) {
+    return t != NULL && t->deadline_run_count < t->deadline_c;
+}
+
+
+/* 
+ * ===  FUNCTION  =============================================================
+ *         Name:  a1_mod_lowest_thread
+ *
+ *  Description:  Take two threads and checks which one has the earliest deadline.
+ *                Applies tie breakers where necessary.
+ * 
+ *      Version:  0.0.1
+ *       Params:  pth_t t1
+ *                pth_t t2
+ *      Returns:  pth_t lowest
+ *        Usage:  a1_mod_lowest_thread( pth_t t1, pth_t t2 )
+ *      Outputs:  N/A
+ * ============================================================================
+ */
+pth_t a1_mod_lowest_thread(pth_t t1, pth_t t2) {
+    if (t1 == NULL && t2 == NULL)
+        return NULL;
+    if (t2 == NULL || t1->deadline_t_counter < t2->deadline_t_counter)
+        return t1;
+    if (t1 == NULL || t1->deadline_t_counter > t2->deadline_t_counter)
+        return t2;
+
+    /* Tiebreaker */
+    if (pth_time_cmp(&t1->spawned, &t2->spawned) <= 0)
+        return t1;
+    else
+        return t2;
+
+    // Will never get here
+    return NULL;
 }

@@ -389,8 +389,16 @@ intern void *pth_scheduler(void *dummy)
     pth_scheduler_load(&snapshot);
 
     /* pick the next task from the head of the ready queue. this implements a
-     * round robin method */
-    pth_current = pth_RQ.q_head;
+     * round robin method
+     *
+     * Re order the schedule according Earliest Deadline First.
+     * If no runnable thread is found, a dummy thread is run for the time slice
+     * */
+    if (a1_mod_earliest_deadline_first(&pth_RQ) != NULL)
+        pth_current = pth_RQ.q_head;
+    else
+        pth_current = a1_mod_dummy_thread;
+
     if (pth_current == NULL) {
         fprintf(stderr, "**Pth** SCHEDULER INTERNAL ERROR: "
                         "no more thread(s) available to schedule!?!?\n");
@@ -433,8 +441,9 @@ intern void *pth_scheduler(void *dummy)
     if (a1_mod_is_user_thread(pth_current)) {
         if (pth_time_equal(a1_mod_start_time, *PTH_TIME_ZERO))
             pth_time_set(&a1_mod_start_time, PTH_TIME_NOW);
-        a1_mod_log_print_line_start(pth_current->lastran, pth_sched->running);
     }
+    if (pth_current == a1_mod_dummy_thread || a1_mod_is_user_thread(pth_current))
+        a1_mod_log_print_line_start(pth_current->lastran, pth_sched->running);
 
 
     /* ** ENTERING THREAD ** - by switching the machine context */

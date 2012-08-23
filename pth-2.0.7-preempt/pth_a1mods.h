@@ -47,11 +47,18 @@ int user_threads_count = 0;
 /* Local function defs */
 void a1_mod_print_log_header();
 
+bool a1_mod_is_runnable(pth_t t);
+
+pth_t a1_mod_lowest_thread(pth_t t1, pth_t t2);
+
 #endif /* _PTH_A1_MODS_C_ */
 
 /* These declarations are globally available to the rest of the pth lib */
+typedef struct pth_pqueue_st pth_pqueue_t;
 
 pth_time_t a1_mod_start_time;
+
+pth_t a1_mod_dummy_thread;
 
 /* Private API methods */
 
@@ -74,5 +81,7 @@ extern void a1_mod_update_run_count(pth_t t);
 extern int a1_mod_is_schedulable(pth_t t);
 
 extern void *a1_mod_dummy_thread_func(void *arg);
+
+extern int a1_mod_earliest_deadline_first(pth_pqueue_t *q);
 
 #endif /* _PTH_A1_MODS_H_ */
