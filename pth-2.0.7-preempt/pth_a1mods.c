@@ -54,6 +54,13 @@ int a1_mod_init() {
 
     pth_time_set(&a1_mod_start_time, PTH_TIME_ZERO);
 
+    /* Create dummy thread */
+    pth_attr_t attr = pth_attr_new();
+    pth_attr_set(attr, PTH_ATTR_NAME, "dummy");
+    pth_attr_set(attr, PTH_ATTR_DUMMY, TRUE);
+    if (!pth_spawn(attr, a1_mod_dummy_thread_func, NULL))
+        perror("Failed to spawn dummy thread");
+
     return true;
 }
 
@@ -325,7 +332,25 @@ int a1_mod_is_schedulable(pth_t t) {
         ut = user_threads[i];
         total += (float) ut->deadline_c / (float) ut->deadline_t;
     }
-    fprintf(stderr, "c: %d - t: %d - total: %f\n", t->deadline_c, t->deadline_t, total);
 
     return (total <= 1.0);
+}
+
+
+/* 
+ * ===  FUNCTION  =============================================================
+ *         Name:  a1_mod_dummy_thread_func
+ *
+ *  Description:  Dummy thread. Just an infinite while loop. Used to fill in
+ *                gaps where no threads are schedulable
+ * 
+ *      Version:  0.0.1
+ *       Params:  void arg*
+ *      Returns:  static void *
+ *        Usage:  a1_mod_dummy_thread_func( void *arg )
+ *      Outputs:  N/A
+ * ============================================================================
+ */
+void *a1_mod_dummy_thread_func(void *arg) {
+    while (true) { /* Loop forever! */ }
 }
