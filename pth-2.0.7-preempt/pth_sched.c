@@ -397,10 +397,16 @@ intern void *pth_scheduler(void *dummy)
      * Re order the schedule according Earliest Deadline First.
      * If no runnable thread is found, a dummy thread is run for the time slice
      * */
-    if (a1_mod_earliest_deadline_first(&pth_RQ) != NULL)
+    if (a1_mod_earliest_deadline_first(&pth_RQ) != NULL) {
         pth_current = pth_RQ.q_head;
-    else
+    } else {
+        /* Make sure threads can't wake up and want more time than we have available
+         * If you're asleep and you could have gone otherwise, you're out of luck bud.
+         * */
+        if (a1_mod_earliest_deadline_first(&pth_WQ) != NULL)
+          a1_mod_update_run_count(pth_WQ.q_head);
         pth_current = a1_mod_dummy_thread;
+    }
 
     if (pth_current == NULL) {
         fprintf(stderr, "**Pth** SCHEDULER INTERNAL ERROR: "
