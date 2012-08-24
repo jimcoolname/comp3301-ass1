@@ -54,7 +54,10 @@ pth_t a1_mod_lowest_thread(pth_t t1, pth_t t2);
 #endif /* _PTH_A1_MODS_C_ */
 
 /* These declarations are globally available to the rest of the pth lib */
+#ifndef _A1_MOD_PQUEUE_DEF_
+#define _A1_MOD_PQUEUE_DEF_
 typedef struct pth_pqueue_st pth_pqueue_t;
+#endif /* pqueue def */
 
 pth_time_t a1_mod_start_time;
 

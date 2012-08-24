@@ -34,7 +34,10 @@ struct pth_pqueue_st {
     pth_t q_head;
     int   q_num;
 };
+#ifndef _A1_MOD_PQUEUE_DEF_
+#define _A1_MOD_PQUEUE_DEF_
 typedef struct pth_pqueue_st pth_pqueue_t;
+#endif /* pqueue def */
 
 #endif /* cpp */
 
