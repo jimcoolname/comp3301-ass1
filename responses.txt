@@ -1,0 +1,101 @@
+Question 1:
+Each algorithm type has it’s pros and cons. Rate Monotonic (RM) is known to have less runtime overhead and less slice time jitter,
+whereas Earliest Deadline First (EDF) allows better utilisation of all the available system resources and may improve responsiveness.
+The RM schedulability test states that the sum of all deadline_c/deadline_t must be less than or equal to n * (2^(1/n) - 1) where n is the number of tasks.
+The EDF schedulability test states that it must be less than or equal to 1.
+Given the maths, the only situation where RM will be able to schedule 100% utilisation is when there is only one task. EDF on the other hand can schedule
+anything up to 100% utilisation at any given time. As the number of tasks tends towards infinity, this number tends towards 0.69 for RM, or approximately
+a potential of 69% utilisation. Practically this means an RM system can do less work overall.
+The scheduling priority in RM is determined by the cycle duration of the job whereas EDF is determined by the period. This means that RM runs whichever
+job is going to take the least time to complete, whereas earliest deadline first runs whichever one is has the shortest amount of time left to complete
+it’s required execution. Practically this means that an RM schedule is more likely to respond very quickly for small, non-time-intensive tasks, but be
+much less responsive with longer tasks. An EDF system is likely to seem much smoother with a more even response time across a group of threads.
+
+Question 2:
+This is undesirable because it will extend the total running time of the process.. A thread generally yields because it is done what it wanted to do and
+wants to give another thread a chance to execute something (it is most often used in cooperative threading systems). If the scheduler instead waits until
+that thread is finished it’s time slice before moving onto the next thread, that thread could have just busy waited until it was preempted instead of
+yielding. This time could have been better used to run another process for it’s time slice.
+A potential solution to this problem would be instead of spawning a dummy thread to wait for the remaining time that would have been allocated to the
+yielded thread, reset the sig alarms to point to the next thread in the queue and context switch to it for the remaining time (so as to stay with the set
+time slice lengths). The biggest potential problem with this solution would be ensuring that the threads are aware that they may not have access to the
+full time slice so they avoid running operations that they expect to finish before they are preempted.
+
+Question 3:
+A system of threads that is not schedulable is any system of threads that collectively exceeds the schedulability tests for the given algorithm. Assuming
+we use EDF, this would be any set of threads where the sum of deadline_c/deadline_t > 1.
+Example (created in order, started running at the same time):
+-------------------------------------------
+Process   |   Execution time  |   Period  |
+-------------------------------------------
+P1        |   5               |   10      |
+P2        |   5               |   10      |
+P3        |   1               |   10      |
+-------------------------------------------
+
+Execution of these threads shows why they are not schedulable:
+-------------------------------------------------
+time slice  |   execute   |   running totals    |
+-------------------------------------------------
+1           |   P1        |   P1=1, P2=0, P3=0  |
+2           |   P2        |   P1=1, P2=1, P3=0  |
+3           |   P3        |   P1=1, P2=1, P3=1  |
+4           |   P1        |   P1=2, P2=1, P3=1  |
+5           |   P2        |   P1=2, P2=2, P3=1  |
+6           |   P1        |   P1=3, P2=2, P3=1  |
+7           |   P2        |   P1=3, P2=3, P3=1  |
+8           |   P1        |   P1=4, P2=3, P3=1  |
+9           |   P2        |   P1=4, P2=4, P3=1  |
+10          |   P1        |   P1=5, P2=4, P3=1  |
+-------------------------------------------------
+As the table shows, at the end of the 10th time slice, when all threads should have been allocated their required amount of executions, P2 has been run 4
+times but it has only been run once. This is due to there being more time requested than there was available to the scheduler.
+
+Question 4:
+Comparing EDF and RM schedulability tests, we see that for a system of 3 threads, EDF can schedule up to 100% utilisation, whereas RM can only schedule
+approximately 83%.
+Example (created in order, started running at the same time):
+-------------------------------------------
+Process   |   Execution time  |   Period  |
+-------------------------------------------
+P1        |   5               |   10      |
+P2        |   6               |   15      |
+-------------------------------------------
+
+Execution of these threads shows why they are not schedulable in RM:
+-------------------------------
+time slice  |   EDF   |   RM  |
+-------------------------------
+1           |   P1    |   P1  |
+2           |   P1    |   P1  |
+3           |   P1    |   P1  |
+4           |   P1    |   P1  |
+5           |   P1    |   P1  |
+6           |   P2    |   P2  |
+7           |   P2    |   P2  |
+8           |   P2    |   P2  |
+9           |   P2    |   P2  |
+10          |   P2    |   P2  |
+11          |   P2    |   P1  |
+12          |   P1    |   P1  |
+13          |   P1    |   P1  |
+14          |   P1    |   P1  |
+15          |   P1    |   P1  |
+16          |   P1    |   P2  |
+17          |   P2    |       |
+18          |   P2    |       |
+19          |   P2    |       |
+20          |   P2    |   P1  |
+21          |   P2    |   P1  |
+22          |   P2    |   P1  |
+23          |   P1    |   P1  |
+24          |   P1    |   P1  |
+25          |   P1    |   P1  |
+26          |   P1    |   P2  |
+27          |   P1    |   P2  |
+28          |         |   P2  |
+29          |         |   P2  |
+30          |         |   P2  |
+-------------------------------
+As the table shows, P2 missed it’s first deadline at 15 slices because P1 has a higher priority as long as it hasn’t run everything it needs to. This run count
+gets reset at 10, 20 and 30 slices, meaning every 15 time slices there is 16 thread slices to be run.
